@@ -15,7 +15,7 @@ function addEmployeeCard( index, person ) {
 
     let photo = person.picture.thumbnail;
     
-    let html = `<div class="card card-${index}">
+    let html = `<div class="card" id="card-${index}">
                     <div class="card-img-container">
                         <img class="card-img" src="${photo}" alt="profile picture">
                     </div>
@@ -29,7 +29,7 @@ function addEmployeeCard( index, person ) {
     $card = $( html );
     $gallery.append( $( html ) );
 
-    $( ".card-" + index ).click( function (event) { showModal( event, person ) } );
+    $( "#card-" + index ).click( function (event) { showModal( event, person ) } );
 }
 
 function showModal ( event, person ) {
@@ -63,14 +63,27 @@ function showModal ( event, person ) {
 
     
     let target = $( event.currentTarget );
-    let index =  $( target ).index();
+
+    // We want to get a list of all of the visible cards and then have the
+    // prev and next buttons only flip between visible cards.
+    let visibleCards = $( ".card:visible" );
+    let index =  $( target ).index( ".card:visible" );
+    
+    // Only show the prev button if we are not the first element
     if ( index !== 0 ) {
-	html += `<button type="button" id="modal-prev" class="modal-prev btn" onclick="$( '.card-${ index - 1 }').click()">Prev</button>`;
+	let prev = $( visibleCards[ index - 1 ] );
+	let prevId = prev.attr( 'id' );
+
+	html += `<button type="button" id="modal-prev" class="modal-prev btn" onclick="$( '#${ prevId }').click()">Prev</button>`;
 
     }
 
-    if ( index !== numEmployees - 1 ) {
-	html += `<button type="button" id="modal-prev" class="modal-prev btn" onclick="$( '.card-${ index + 1 }').click()">Next</button>`;
+    // Only show the 
+    if ( index !== (visibleCards.length - 1 ) ) {
+	let next = $( visibleCards[ index + 1 ] ) ;
+	let nextId = next.attr( 'id' );
+
+	html += `<button type="button" id="modal-prev" class="modal-prev btn" onclick="$( '#${ nextId }').click()">Next</button>`;
     }
 
     html += `</div>
